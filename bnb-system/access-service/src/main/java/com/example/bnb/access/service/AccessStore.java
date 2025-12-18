@@ -46,10 +46,21 @@ public class AccessStore {
 
     long id = grantIdSeq.incrementAndGet();
     OffsetDateTime now = OffsetDateTime.now();
-    AccessGrant grant = new AccessGrant(id, bookingId, smartLockId, guestPhoneNumber, validFrom, validTo, AccessGrantStatus.GRANTED, now, now);
-    grants.put(id, grant);
 
-    smartLockClient.grantAccess(smartLockId, guestPhoneNumber, validFrom, validTo);
+    String externalGrantId = smartLockClient.grantAccess(bookingId, smartLockId, guestPhoneNumber, validFrom, validTo);
+    AccessGrant grant = new AccessGrant(
+        id,
+        bookingId,
+        smartLockId,
+        externalGrantId,
+        guestPhoneNumber,
+        validFrom,
+        validTo,
+        AccessGrantStatus.GRANTED,
+        now,
+        now
+    );
+    grants.put(id, grant);
 
     try {
       notificationClient.sendSms(new NotificationClient.SmsRequest(
@@ -81,7 +92,7 @@ public class AccessStore {
         return existing;
       }
 
-      smartLockClient.revokeAccess(existing.smartLockId(), existing.guestPhoneNumber());
+      smartLockClient.revokeAccess(existing.smartLockId(), existing.externalGrantId());
 
       try {
         notificationClient.sendSms(new NotificationClient.SmsRequest(
@@ -97,6 +108,7 @@ public class AccessStore {
           existing.id(),
           existing.bookingId(),
           existing.smartLockId(),
+          existing.externalGrantId(),
           existing.guestPhoneNumber(),
           existing.validFrom(),
           existing.validTo(),

@@ -5,5 +5,15 @@
 /workspace/bnb-system/access-service/src/main/java/com/example/bnb/access/domain/AccessGrantStatus.java
 /workspace/bnb-system/access-service/src/main/java/com/example/bnb/access/service/AccessStore.java
 /workspace/bnb-system/access-service/src/main/java/com/example/bnb/access/service/NotificationClient.java
+/workspace/bnb-system/access-service/src/main/java/com/example/bnb/access/smartlock/RoutingSmartLockClient.java
 /workspace/bnb-system/access-service/src/main/java/com/example/bnb/access/smartlock/SmartLockClient.java
+/workspace/bnb-system/access-service/src/main/java/com/example/bnb/access/smartlock/SmartLockConfiguration.java
+/workspace/bnb-system/access-service/src/main/java/com/example/bnb/access/smartlock/SmartLockMode.java
+/workspace/bnb-system/access-service/src/main/java/com/example/bnb/access/smartlock/SmartLockProperties.java
+/workspace/bnb-system/access-service/src/main/java/com/example/bnb/access/smartlock/SmartLockProvider.java
+/workspace/bnb-system/access-service/src/main/java/com/example/bnb/access/smartlock/SmartLockTarget.java
 /workspace/bnb-system/access-service/src/main/java/com/example/bnb/access/smartlock/StubSmartLockClient.java
+/workspace/bnb-system/access-service/src/main/java/com/example/bnb/access/smartlock/seam/SeamProperties.java
+/workspace/bnb-system/access-service/src/main/java/com/example/bnb/access/smartlock/seam/SeamSmartLockClient.java
+/workspace/bnb-system/access-service/src/main/java/com/example/bnb/access/smartlock/yale/YaleProperties.java
+/workspace/bnb-system/access-service/src/main/java/com/example/bnb/access/smartlock/yale/YaleSmartLockClient.java
