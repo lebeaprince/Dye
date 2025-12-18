@@ -5,6 +5,27 @@ spring:
   application:
     name: access-service
 
+bnb:
+  smartlock:
+    # Default to stub so local/dev environments don't fail without credentials.
+    # Set to "routing" to enable Yale/Seam routing.
+    mode: stub
+    yale:
+      enabled: false
+      # Example: https://api.yale.example
+      base-url: ${YALE_BASE_URL:}
+      # Bearer token used to call the Yale API (format depends on your Yale integration).
+      access-token: ${YALE_ACCESS_TOKEN:}
+      # Path templates; variables: {deviceId}, {grantId}
+      grant-path: /locks/{deviceId}/access-grants
+      revoke-path: /locks/{deviceId}/access-grants/{grantId}/revoke
+    seam:
+      enabled: false
+      base-url: https://connect.getseam.com
+      api-key: ${SEAM_API_KEY:}
+      create-access-code-path: /access_codes/create
+      delete-access-code-path: /access_codes/delete
+
 management:
   endpoints:
     web:
