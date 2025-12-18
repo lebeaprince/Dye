@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -34,8 +35,12 @@ public class BookingsController {
   ) {}
 
   @PostMapping
-  public Booking create(@Valid @RequestBody CreateBookingRequest req) {
+  public Booking create(
+      @RequestHeader(value = "X-Bnb-Slug", required = false) String bnbSlug,
+      @Valid @RequestBody CreateBookingRequest req
+  ) {
     return store.createBooking(
+        BookingStore.normalizeBnbSlug(bnbSlug),
         req.roomId(),
         req.guestId(),
         req.startAt(),
@@ -46,17 +51,26 @@ public class BookingsController {
   }
 
   @GetMapping("/{bookingId}")
-  public Booking get(@PathVariable long bookingId) {
-    return store.getBooking(bookingId);
+  public Booking get(
+      @RequestHeader(value = "X-Bnb-Slug", required = false) String bnbSlug,
+      @PathVariable long bookingId
+  ) {
+    return store.getBooking(BookingStore.normalizeBnbSlug(bnbSlug), bookingId);
   }
 
   @PostMapping("/{bookingId}/cancel")
-  public Booking cancel(@PathVariable long bookingId) {
-    return store.cancelBooking(bookingId);
+  public Booking cancel(
+      @RequestHeader(value = "X-Bnb-Slug", required = false) String bnbSlug,
+      @PathVariable long bookingId
+  ) {
+    return store.cancelBooking(BookingStore.normalizeBnbSlug(bnbSlug), bookingId);
   }
 
   @PostMapping("/{bookingId}/confirm")
-  public Booking confirm(@PathVariable long bookingId) {
-    return store.confirmBooking(bookingId);
+  public Booking confirm(
+      @RequestHeader(value = "X-Bnb-Slug", required = false) String bnbSlug,
+      @PathVariable long bookingId
+  ) {
+    return store.confirmBooking(BookingStore.normalizeBnbSlug(bnbSlug), bookingId);
   }
 }

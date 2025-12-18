@@ -5,65 +5,86 @@ import com.example.bnb.booking.domain.BookingStatus;
 import com.example.bnb.booking.domain.Guest;
 import com.example.bnb.booking.domain.Room;
 import com.example.bnb.booking.domain.ServicePackage;
+import com.example.bnb.booking.domain.SmartDevice;
+import com.example.bnb.booking.domain.SmartDeviceType;
 import com.example.bnb.booking.domain.StayDurationOption;
+import com.example.bnb.booking.persistence.BookingEntity;
+import com.example.bnb.booking.persistence.BookingRepository;
+import com.example.bnb.booking.persistence.GuestEntity;
+import com.example.bnb.booking.persistence.GuestRepository;
+import com.example.bnb.booking.persistence.RoomEntity;
+import com.example.bnb.booking.persistence.RoomRepository;
+import com.example.bnb.booking.persistence.SmartDeviceEntity;
+import com.example.bnb.booking.persistence.SmartDeviceRepository;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.atomic.AtomicLong;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class BookingStore {
-  private final AtomicLong roomIdSeq = new AtomicLong(1000);
-  private final AtomicLong guestIdSeq = new AtomicLong(2000);
-  private final AtomicLong bookingIdSeq = new AtomicLong(3000);
+  private static final String DEFAULT_BNB_SLUG = "default";
 
-  private final ConcurrentMap<Long, Room> rooms = new ConcurrentHashMap<>();
-  private final ConcurrentMap<Long, Guest> guests = new ConcurrentHashMap<>();
-  private final ConcurrentMap<Long, Booking> bookings = new ConcurrentHashMap<>();
+  private final RoomRepository rooms;
+  private final GuestRepository guests;
+  private final BookingRepository bookings;
+  private final SmartDeviceRepository devices;
 
-  public Room createRoom(String roomNumber, String smartLockId) {
-    long id = roomIdSeq.incrementAndGet();
-    Room room = new Room(id, roomNumber, smartLockId, true);
-    rooms.put(id, room);
-    return room;
+  public BookingStore(RoomRepository rooms, GuestRepository guests, BookingRepository bookings, SmartDeviceRepository devices) {
+    this.rooms = rooms;
+    this.guests = guests;
+    this.bookings = bookings;
+    this.devices = devices;
   }
 
-  public List<Room> listRooms() {
-    return new ArrayList<>(rooms.values());
-  }
-
-  public Room getRoom(long roomId) {
-    Room room = rooms.get(roomId);
-    if (room == null) {
-      throw new NoSuchElementException("Room not found: " + roomId);
+  public static String normalizeBnbSlug(String bnbSlug) {
+    if (bnbSlug == null || bnbSlug.isBlank()) {
+      return DEFAULT_BNB_SLUG;
     }
-    return room;
+    return bnbSlug.trim();
   }
 
-  public Guest createGuest(String fullName, String phoneNumber, boolean smsOptIn) {
-    long id = guestIdSeq.incrementAndGet();
-    Guest guest = new Guest(id, fullName, phoneNumber, smsOptIn);
-    guests.put(id, guest);
-    return guest;
+  @Transactional
+  public Room createRoom(String bnbSlug, String roomNumber, String smartLockId) {
+    RoomEntity saved = rooms.save(new RoomEntity(normalizeBnbSlug(bnbSlug), roomNumber, smartLockId, true));
+    return toRoom(saved);
   }
 
-  public List<Guest> listGuests() {
-    return new ArrayList<>(guests.values());
+  @Transactional(readOnly = true)
+  public List<Room> listRooms(String bnbSlug) {
+    return rooms.findByBnbSlugOrderByIdAsc(normalizeBnbSlug(bnbSlug)).stream().map(BookingStore::toRoom).toList();
   }
 
-  public Guest getGuest(long guestId) {
-    Guest guest = guests.get(guestId);
-    if (guest == null) {
-      throw new NoSuchElementException("Guest not found: " + guestId);
-    }
-    return guest;
+  @Transactional(readOnly = true)
+  public Room getRoom(String bnbSlug, long roomId) {
+    RoomEntity room = rooms.findByIdAndBnbSlug(roomId, normalizeBnbSlug(bnbSlug))
+        .orElseThrow(() -> new NoSuchElementException("Room not found: " + roomId));
+    return toRoom(room);
   }
 
+  @Transactional
+  public Guest createGuest(String bnbSlug, String fullName, String phoneNumber, boolean smsOptIn) {
+    GuestEntity saved = guests.save(new GuestEntity(normalizeBnbSlug(bnbSlug), fullName, phoneNumber, smsOptIn));
+    return toGuest(saved);
+  }
+
+  @Transactional(readOnly = true)
+  public List<Guest> listGuests(String bnbSlug) {
+    return guests.findByBnbSlugOrderByIdAsc(normalizeBnbSlug(bnbSlug)).stream().map(BookingStore::toGuest).toList();
+  }
+
+  @Transactional(readOnly = true)
+  public Guest getGuest(String bnbSlug, long guestId) {
+    GuestEntity guest = guests.findByIdAndBnbSlug(guestId, normalizeBnbSlug(bnbSlug))
+        .orElseThrow(() -> new NoSuchElementException("Guest not found: " + guestId));
+    return toGuest(guest);
+  }
+
+  @Transactional
   public Booking createBooking(
+      String bnbSlug,
       long roomId,
       long guestId,
       OffsetDateTime startAt,
@@ -71,18 +92,14 @@ public class BookingStore {
       int durationUnits,
       ServicePackage servicePackage
   ) {
-    if (!rooms.containsKey(roomId)) {
-      throw new NoSuchElementException("Room not found: " + roomId);
-    }
-    if (!guests.containsKey(guestId)) {
-      throw new NoSuchElementException("Guest not found: " + guestId);
-    }
+    String slug = normalizeBnbSlug(bnbSlug);
+    rooms.findByIdAndBnbSlug(roomId, slug).orElseThrow(() -> new NoSuchElementException("Room not found: " + roomId));
+    guests.findByIdAndBnbSlug(guestId, slug).orElseThrow(() -> new NoSuchElementException("Guest not found: " + guestId));
 
     OffsetDateTime endAt = computeEnd(startAt, stayDuration, durationUnits);
 
-    long id = bookingIdSeq.incrementAndGet();
-    Booking booking = new Booking(
-        id,
+    BookingEntity saved = bookings.save(new BookingEntity(
+        slug,
         roomId,
         guestId,
         startAt,
@@ -91,61 +108,71 @@ public class BookingStore {
         durationUnits,
         servicePackage,
         BookingStatus.PENDING_PAYMENT
-    );
-    bookings.put(id, booking);
-    return booking;
+    ));
+
+    return toBooking(saved);
   }
 
-  public Booking getBooking(long bookingId) {
-    Booking booking = bookings.get(bookingId);
-    if (booking == null) {
-      throw new NoSuchElementException("Booking not found: " + bookingId);
+  @Transactional(readOnly = true)
+  public Booking getBooking(String bnbSlug, long bookingId) {
+    BookingEntity booking = bookings.findByIdAndBnbSlug(bookingId, normalizeBnbSlug(bnbSlug))
+        .orElseThrow(() -> new NoSuchElementException("Booking not found: " + bookingId));
+    return toBooking(booking);
+  }
+
+  @Transactional
+  public Booking cancelBooking(String bnbSlug, long bookingId) {
+    BookingEntity booking = bookings.findByIdAndBnbSlug(bookingId, normalizeBnbSlug(bnbSlug))
+        .orElseThrow(() -> new NoSuchElementException("Booking not found: " + bookingId));
+
+    if (booking.getStatus() != BookingStatus.CANCELLED) {
+      booking.setStatus(BookingStatus.CANCELLED);
+      booking = bookings.save(booking);
     }
-    return booking;
+
+    return toBooking(booking);
   }
 
-  public Booking cancelBooking(long bookingId) {
-    return bookings.compute(bookingId, (id, existing) -> {
-      if (existing == null) {
-        throw new NoSuchElementException("Booking not found: " + bookingId);
-      }
-      if (existing.status() == BookingStatus.CANCELLED) {
-        return existing;
-      }
-      return new Booking(
-          existing.id(),
-          existing.roomId(),
-          existing.guestId(),
-          existing.startAt(),
-          existing.endAt(),
-          existing.stayDuration(),
-          existing.durationUnits(),
-          existing.servicePackage(),
-          BookingStatus.CANCELLED
-      );
-    });
+  @Transactional
+  public Booking confirmBooking(String bnbSlug, long bookingId) {
+    BookingEntity booking = bookings.findByIdAndBnbSlug(bookingId, normalizeBnbSlug(bnbSlug))
+        .orElseThrow(() -> new NoSuchElementException("Booking not found: " + bookingId));
+
+    if (booking.getStatus() == BookingStatus.CANCELLED) {
+      throw new IllegalStateException("Cannot confirm a cancelled booking");
+    }
+
+    if (booking.getStatus() != BookingStatus.CONFIRMED) {
+      booking.setStatus(BookingStatus.CONFIRMED);
+      booking = bookings.save(booking);
+    }
+
+    return toBooking(booking);
   }
 
-  public Booking confirmBooking(long bookingId) {
-    return bookings.compute(bookingId, (id, existing) -> {
-      if (existing == null) {
-        throw new NoSuchElementException("Booking not found: " + bookingId);
-      }
-      if (existing.status() == BookingStatus.CANCELLED) {
-        throw new IllegalStateException("Cannot confirm a cancelled booking");
-      }
-      return new Booking(
-          existing.id(),
-          existing.roomId(),
-          existing.guestId(),
-          existing.startAt(),
-          existing.endAt(),
-          existing.stayDuration(),
-          existing.durationUnits(),
-          existing.servicePackage(),
-          BookingStatus.CONFIRMED
-      );
-    });
+  @Transactional
+  public SmartDevice addDevice(String bnbSlug, long roomId, SmartDeviceType deviceType, String name, String externalId) {
+    String slug = normalizeBnbSlug(bnbSlug);
+    rooms.findByIdAndBnbSlug(roomId, slug).orElseThrow(() -> new NoSuchElementException("Room not found: " + roomId));
+    SmartDeviceEntity saved = devices.save(new SmartDeviceEntity(slug, roomId, deviceType, name, externalId, true));
+    return toDevice(saved);
+  }
+
+  @Transactional(readOnly = true)
+  public List<SmartDevice> listDevices(String bnbSlug, Long roomId) {
+    String slug = normalizeBnbSlug(bnbSlug);
+    List<SmartDeviceEntity> found = (roomId == null)
+        ? devices.findByBnbSlugOrderByIdAsc(slug)
+        : devices.findByBnbSlugAndRoomIdOrderByIdAsc(slug, roomId);
+    return found.stream().map(BookingStore::toDevice).toList();
+  }
+
+  @Transactional
+  public SmartDevice removeDevice(String bnbSlug, long deviceId) {
+    SmartDeviceEntity existing = devices.findByIdAndBnbSlug(deviceId, normalizeBnbSlug(bnbSlug))
+        .orElseThrow(() -> new NoSuchElementException("Smart device not found: " + deviceId));
+    devices.delete(existing);
+    return toDevice(existing);
   }
 
   private static OffsetDateTime computeEnd(OffsetDateTime startAt, StayDurationOption option, int durationUnits) {
@@ -158,5 +185,31 @@ public class BookingStore {
       case WEEKLY -> startAt.plusWeeks(durationUnits);
       case MONTHLY -> startAt.plusMonths(durationUnits);
     };
+  }
+
+  private static Room toRoom(RoomEntity e) {
+    return new Room(e.getId(), e.getRoomNumber(), e.getSmartLockId(), e.isActive());
+  }
+
+  private static Guest toGuest(GuestEntity e) {
+    return new Guest(e.getId(), e.getFullName(), e.getPhoneNumber(), e.isSmsOptIn());
+  }
+
+  private static Booking toBooking(BookingEntity e) {
+    return new Booking(
+        e.getId(),
+        e.getRoomId(),
+        e.getGuestId(),
+        e.getStartAt(),
+        e.getEndAt(),
+        e.getStayDuration(),
+        e.getDurationUnits(),
+        e.getServicePackage(),
+        e.getStatus()
+    );
+  }
+
+  private static SmartDevice toDevice(SmartDeviceEntity e) {
+    return new SmartDevice(e.getId(), e.getRoomId(), e.getDeviceType(), e.getName(), e.getExternalId(), e.isActive());
   }
 }

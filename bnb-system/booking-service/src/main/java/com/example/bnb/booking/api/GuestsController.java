@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -28,18 +29,24 @@ public class GuestsController {
   ) {}
 
   @PostMapping
-  public Guest create(@Valid @RequestBody CreateGuestRequest req) {
+  public Guest create(
+      @RequestHeader(value = "X-Bnb-Slug", required = false) String bnbSlug,
+      @Valid @RequestBody CreateGuestRequest req
+  ) {
     boolean smsOptIn = req.smsOptIn() == null || req.smsOptIn();
-    return store.createGuest(req.fullName(), req.phoneNumber(), smsOptIn);
+    return store.createGuest(BookingStore.normalizeBnbSlug(bnbSlug), req.fullName(), req.phoneNumber(), smsOptIn);
   }
 
   @GetMapping
-  public List<Guest> list() {
-    return store.listGuests();
+  public List<Guest> list(@RequestHeader(value = "X-Bnb-Slug", required = false) String bnbSlug) {
+    return store.listGuests(BookingStore.normalizeBnbSlug(bnbSlug));
   }
 
   @GetMapping("/{guestId}")
-  public Guest get(@PathVariable long guestId) {
-    return store.getGuest(guestId);
+  public Guest get(
+      @RequestHeader(value = "X-Bnb-Slug", required = false) String bnbSlug,
+      @PathVariable long guestId
+  ) {
+    return store.getGuest(BookingStore.normalizeBnbSlug(bnbSlug), guestId);
   }
 }

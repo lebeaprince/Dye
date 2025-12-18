@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Admin — BNB</title>
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+  <header class="header">
+    <div class="container header__inner">
+      <div class="brand">
+        <div class="brand__mark">BNB</div>
+        <div class="brand__text">
+          <div class="brand__name">Admin</div>
+          <div class="brand__tag">Manage rooms & smart devices</div>
+        </div>
+      </div>
+      <nav class="nav">
+        <a href="/">Back to site</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="section">
+    <div class="container">
+      <div class="grid grid--2">
+        <div class="card">
+          <h2>Admin login</h2>
+          <p class="muted">This is a placeholder UI. Wire it to your auth/access flow.</p>
+          <form id="loginForm" class="form">
+            <label>
+              <span>Email</span>
+              <input id="email" type="email" placeholder="admin@yourbnb.com" required />
+            </label>
+            <label>
+              <span>Password</span>
+              <input id="password" type="password" required />
+            </label>
+            <div class="form__actions">
+              <button class="btn" type="submit">Sign in</button>
+              <div class="muted" id="loginStatus"></div>
+            </div>
+          </form>
+        </div>
+
+        <div class="card">
+          <h2>Add a room</h2>
+          <form id="roomForm" class="form">
+            <label>
+              <span>Room number</span>
+              <input id="roomNumber" placeholder="101" required />
+            </label>
+            <label>
+              <span>Smart lock id</span>
+              <input id="smartLockId" placeholder="lock-101" required />
+            </label>
+            <div class="form__actions">
+              <button class="btn" type="submit">Create room</button>
+              <div class="muted" id="roomStatus"></div>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <div class="section__header" style="margin-top: 28px">
+        <h2>Smart devices</h2>
+        <p class="muted">Attach devices to rooms (e.g. thermostat, camera, light, lock).</p>
+      </div>
+
+      <div class="grid grid--2">
+        <div class="card">
+          <h3>Add device</h3>
+          <form id="deviceForm" class="form">
+            <label>
+              <span>Room</span>
+              <select id="deviceRoomId" required></select>
+            </label>
+            <label>
+              <span>Type</span>
+              <select id="deviceType">
+                <option value="SMART_LOCK">Smart lock</option>
+                <option value="THERMOSTAT">Thermostat</option>
+                <option value="LIGHT">Light</option>
+                <option value="CAMERA">Camera</option>
+                <option value="SENSOR">Sensor</option>
+                <option value="OTHER">Other</option>
+              </select>
+            </label>
+            <label>
+              <span>Name</span>
+              <input id="deviceName" placeholder="Hallway thermostat" required />
+            </label>
+            <label>
+              <span>External id</span>
+              <input id="deviceExternalId" placeholder="thermo-101" required />
+            </label>
+            <div class="form__actions">
+              <button class="btn" type="submit">Add device</button>
+              <div class="muted" id="deviceStatus"></div>
+            </div>
+          </form>
+        </div>
+
+        <div class="card">
+          <h3>Devices</h3>
+          <div id="devicesList" class="list"></div>
+          <div class="muted" id="devicesEmpty" hidden>No devices yet.</div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="/admin.js"></script>
+</body>
+</html>
