@@ -2,6 +2,7 @@ package com.example.bnb.booking.api;
 
 import com.example.bnb.booking.domain.Room;
 import com.example.bnb.booking.service.BookingStore;
+import com.example.bnb.booking.service.TransactionLogger;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import java.util.List;
@@ -17,9 +18,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/rooms")
 public class RoomsController {
   private final BookingStore store;
+  private final TransactionLogger tx;
 
-  public RoomsController(BookingStore store) {
+  public RoomsController(BookingStore store, TransactionLogger tx) {
     this.store = store;
+    this.tx = tx;
   }
 
   public record CreateRoomRequest(
@@ -30,9 +33,22 @@ public class RoomsController {
   @PostMapping
   public Room create(
       @RequestHeader(value = "X-Bnb-Slug", required = false) String bnbSlug,
+      @RequestHeader(value = "X-Actor", required = false) String actor,
       @Valid @RequestBody CreateRoomRequest req
   ) {
-    return store.createRoom(BookingStore.normalizeBnbSlug(bnbSlug), req.roomNumber(), req.smartLockId());
+    String slug = BookingStore.normalizeBnbSlug(bnbSlug);
+    Room room = store.createRoom(slug, req.roomNumber(), req.smartLockId());
+    tx.record(
+        slug,
+        actor,
+        "ROOM_CREATED",
+        "Created room " + room.roomNumber(),
+        room.id(),
+        null,
+        null,
+        null
+    );
+    return room;
   }
 
   @GetMapping

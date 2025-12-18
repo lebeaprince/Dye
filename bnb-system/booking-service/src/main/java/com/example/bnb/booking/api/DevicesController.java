@@ -3,6 +3,7 @@ package com.example.bnb.booking.api;
 import com.example.bnb.booking.domain.SmartDevice;
 import com.example.bnb.booking.domain.SmartDeviceType;
 import com.example.bnb.booking.service.BookingStore;
+import com.example.bnb.booking.service.TransactionLogger;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -21,9 +22,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/devices")
 public class DevicesController {
   private final BookingStore store;
+  private final TransactionLogger tx;
 
-  public DevicesController(BookingStore store) {
+  public DevicesController(BookingStore store, TransactionLogger tx) {
     this.store = store;
+    this.tx = tx;
   }
 
   public record CreateDeviceRequest(
@@ -36,15 +39,28 @@ public class DevicesController {
   @PostMapping
   public SmartDevice create(
       @RequestHeader(value = "X-Bnb-Slug", required = false) String bnbSlug,
+      @RequestHeader(value = "X-Actor", required = false) String actor,
       @Valid @RequestBody CreateDeviceRequest req
   ) {
-    return store.addDevice(
-        BookingStore.normalizeBnbSlug(bnbSlug),
+    String slug = BookingStore.normalizeBnbSlug(bnbSlug);
+    SmartDevice device = store.addDevice(
+        slug,
         req.roomId(),
         req.deviceType(),
         req.name(),
         req.externalId()
     );
+    tx.record(
+        slug,
+        actor,
+        "DEVICE_ADDED",
+        "Added device '" + device.name() + "' (" + device.deviceType() + ")",
+        device.roomId(),
+        device.id(),
+        null,
+        null
+    );
+    return device;
   }
 
   @GetMapping
@@ -58,8 +74,21 @@ public class DevicesController {
   @DeleteMapping("/{deviceId}")
   public SmartDevice remove(
       @RequestHeader(value = "X-Bnb-Slug", required = false) String bnbSlug,
+      @RequestHeader(value = "X-Actor", required = false) String actor,
       @PathVariable long deviceId
   ) {
-    return store.removeDevice(BookingStore.normalizeBnbSlug(bnbSlug), deviceId);
+    String slug = BookingStore.normalizeBnbSlug(bnbSlug);
+    SmartDevice device = store.removeDevice(slug, deviceId);
+    tx.record(
+        slug,
+        actor,
+        "DEVICE_REMOVED",
+        "Removed device '" + device.name() + "' (" + device.deviceType() + ")",
+        device.roomId(),
+        device.id(),
+        null,
+        null
+    );
+    return device;
   }
 }
