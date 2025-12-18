@@ -4,9 +4,13 @@
 /workspace/bnb-system/booking-service/src/main/java/com/example/bnb/booking/api/DevicesController.java
 /workspace/bnb-system/booking-service/src/main/java/com/example/bnb/booking/api/GuestsController.java
 /workspace/bnb-system/booking-service/src/main/java/com/example/bnb/booking/api/RoomsController.java
+/workspace/bnb-system/booking-service/src/main/java/com/example/bnb/booking/api/TransactionsController.java
+/workspace/bnb-system/booking-service/src/main/java/com/example/bnb/booking/bootstrap/DatabaseBootstrap.java
+/workspace/bnb-system/booking-service/src/main/java/com/example/bnb/booking/config/PasswordConfig.java
 /workspace/bnb-system/booking-service/src/main/java/com/example/bnb/booking/domain/Booking.java
 /workspace/bnb-system/booking-service/src/main/java/com/example/bnb/booking/domain/BookingStatus.java
 /workspace/bnb-system/booking-service/src/main/java/com/example/bnb/booking/domain/Guest.java
+/workspace/bnb-system/booking-service/src/main/java/com/example/bnb/booking/domain/Role.java
 /workspace/bnb-system/booking-service/src/main/java/com/example/bnb/booking/domain/Room.java
 /workspace/bnb-system/booking-service/src/main/java/com/example/bnb/booking/domain/ServicePackage.java
 /workspace/bnb-system/booking-service/src/main/java/com/example/bnb/booking/domain/SmartDevice.java
@@ -20,4 +24,9 @@
 /workspace/bnb-system/booking-service/src/main/java/com/example/bnb/booking/persistence/RoomRepository.java
 /workspace/bnb-system/booking-service/src/main/java/com/example/bnb/booking/persistence/SmartDeviceEntity.java
 /workspace/bnb-system/booking-service/src/main/java/com/example/bnb/booking/persistence/SmartDeviceRepository.java
+/workspace/bnb-system/booking-service/src/main/java/com/example/bnb/booking/persistence/TransactionLogEntity.java
+/workspace/bnb-system/booking-service/src/main/java/com/example/bnb/booking/persistence/TransactionLogRepository.java
+/workspace/bnb-system/booking-service/src/main/java/com/example/bnb/booking/persistence/UserEntity.java
+/workspace/bnb-system/booking-service/src/main/java/com/example/bnb/booking/persistence/UserRepository.java
 /workspace/bnb-system/booking-service/src/main/java/com/example/bnb/booking/service/BookingStore.java
+/workspace/bnb-system/booking-service/src/main/java/com/example/bnb/booking/service/TransactionLogger.java

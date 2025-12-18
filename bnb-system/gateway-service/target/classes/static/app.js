@@ -11,6 +11,10 @@ const api = {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
     }).then(r => r.ok ? r.json() : r.text().then(t => Promise.reject(t))),
+    getBooking: (bookingId) => fetch(`/api/booking/bookings/${bookingId}`)
+      .then(r => r.ok ? r.json() : r.text().then(t => Promise.reject(t))),
+    cancelBooking: (bookingId) => fetch(`/api/booking/bookings/${bookingId}/cancel`, { method: 'POST' })
+      .then(r => r.ok ? r.json() : r.text().then(t => Promise.reject(t))),
   }
 };
 
@@ -76,6 +80,11 @@ function setStatus(id, text, isError = false) {
   node.style.color = isError ? '#ff7b7b' : '';
 }
 
+function setJsonStatus(id, value, isError = false) {
+  const txt = typeof value === 'string' ? value : JSON.stringify(value, null, 2);
+  setStatus(id, txt, isError);
+}
+
 async function onSubmitBooking(e) {
   e.preventDefault();
 
@@ -105,6 +114,30 @@ async function onSubmitBooking(e) {
   }
 }
 
+async function onManageCheck() {
+  const bookingId = Number(document.getElementById('manageBookingId').value);
+  if (!bookingId) return;
+  setStatus('manageBookingStatus', 'Loading...');
+  try {
+    const booking = await api.booking.getBooking(bookingId);
+    setJsonStatus('manageBookingStatus', booking);
+  } catch (e) {
+    setStatus('manageBookingStatus', String(e || 'Failed to load booking'), true);
+  }
+}
+
+async function onManageCancel() {
+  const bookingId = Number(document.getElementById('manageBookingId').value);
+  if (!bookingId) return;
+  setStatus('manageBookingStatus', 'Cancelling...');
+  try {
+    const booking = await api.booking.cancelBooking(bookingId);
+    setJsonStatus('manageBookingStatus', booking);
+  } catch (e) {
+    setStatus('manageBookingStatus', String(e || 'Failed to cancel booking'), true);
+  }
+}
+
 (function init() {
   document.getElementById('year').textContent = String(new Date().getFullYear());
 
@@ -114,5 +147,7 @@ async function onSubmitBooking(e) {
   start.value = now.toISOString().slice(0, 16);
 
   document.getElementById('bookingForm').addEventListener('submit', onSubmitBooking);
+  document.getElementById('manageBookingCheck').addEventListener('click', onManageCheck);
+  document.getElementById('manageBookingCancel').addEventListener('click', onManageCancel);
   loadRooms();
 })();

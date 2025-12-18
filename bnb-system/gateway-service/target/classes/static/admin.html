@@ -108,6 +108,213 @@
           <div class="muted" id="devicesEmpty" hidden>No devices yet.</div>
         </div>
       </div>
+
+      <div class="section__header" style="margin-top: 28px">
+        <h2>Activity</h2>
+        <p class="muted">Recent transactions recorded in the booking database (filter/report via API).</p>
+      </div>
+
+      <div class="grid grid--2">
+        <div class="card">
+          <h3>Last 24 hours</h3>
+          <div id="txCounts" class="list"></div>
+          <div class="muted" id="txCountsEmpty" hidden>No activity yet.</div>
+        </div>
+        <div class="card">
+          <h3>Recent</h3>
+          <div id="txRecent" class="list"></div>
+          <div class="muted" id="txRecentEmpty" hidden>No activity yet.</div>
+        </div>
+      </div>
+
+      <div class="section__header" style="margin-top: 28px">
+        <h2>Bookings</h2>
+        <p class="muted">Lookup, confirm, or cancel a booking.</p>
+      </div>
+
+      <div class="grid grid--2">
+        <div class="card">
+          <h3>Booking actions</h3>
+          <form id="bookingAdminForm" class="form">
+            <label>
+              <span>Booking id</span>
+              <input id="adminBookingId" type="number" min="1" placeholder="123" required />
+            </label>
+            <div class="form__actions">
+              <button class="btn btn--secondary" id="adminBookingGet" type="button">Get</button>
+              <button class="btn btn--secondary" id="adminBookingConfirm" type="button">Confirm</button>
+              <button class="btn btn--secondary" id="adminBookingCancel" type="button">Cancel</button>
+            </div>
+            <div class="muted" id="adminBookingStatus"></div>
+          </form>
+        </div>
+
+        <div class="card">
+          <h3>Result</h3>
+          <pre id="adminBookingResult" class="muted" style="white-space: pre-wrap; margin: 0;"></pre>
+        </div>
+      </div>
+
+      <div class="section__header" style="margin-top: 28px">
+        <h2>Payments</h2>
+        <p class="muted">Create/list payments and run the capture/provision flow.</p>
+      </div>
+
+      <div class="grid grid--2">
+        <div class="card">
+          <h3>Create payment</h3>
+          <form id="paymentCreateForm" class="form">
+            <div class="form__row">
+              <label>
+                <span>Booking id</span>
+                <input id="payBookingId" type="number" min="1" required />
+              </label>
+              <label>
+                <span>Amount (cents)</span>
+                <input id="payAmountCents" type="number" min="1" value="10000" required />
+              </label>
+              <label>
+                <span>Currency</span>
+                <input id="payCurrency" value="USD" required />
+              </label>
+            </div>
+            <label>
+              <span>Method</span>
+              <select id="payMethod">
+                <option value="CASH">CASH</option>
+                <option value="CARD">CARD</option>
+              </select>
+            </label>
+            <div class="form__actions">
+              <button class="btn" type="submit">Create</button>
+              <div class="muted" id="paymentCreateStatus"></div>
+            </div>
+          </form>
+        </div>
+
+        <div class="card">
+          <h3>Payment actions</h3>
+          <form id="paymentActionsForm" class="form">
+            <label>
+              <span>Booking id (for list)</span>
+              <input id="payListBookingId" type="number" min="1" />
+            </label>
+            <div class="form__actions">
+              <button class="btn btn--secondary" id="paymentList" type="button">List by booking</button>
+            </div>
+            <label>
+              <span>Payment id</span>
+              <input id="payPaymentId" type="number" min="1" />
+            </label>
+            <div class="form__actions">
+              <button class="btn btn--secondary" id="paymentGet" type="button">Get</button>
+              <button class="btn btn--secondary" id="paymentCapture" type="button">Capture + provision</button>
+              <button class="btn btn--secondary" id="paymentCancel" type="button">Cancel</button>
+            </div>
+            <div class="muted" id="paymentActionsStatus"></div>
+          </form>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top: 14px">
+        <h3>Payments result</h3>
+        <pre id="paymentResult" class="muted" style="white-space: pre-wrap; margin: 0;"></pre>
+      </div>
+
+      <div class="section__header" style="margin-top: 28px">
+        <h2>Access grants (smart lock)</h2>
+        <p class="muted">Grant/revoke access codes for bookings.</p>
+      </div>
+
+      <div class="grid grid--2">
+        <div class="card">
+          <h3>Grant access</h3>
+          <form id="accessGrantForm" class="form">
+            <label>
+              <span>Booking id</span>
+              <input id="grantBookingId" type="number" min="1" required />
+            </label>
+            <label>
+              <span>Smart lock id</span>
+              <input id="grantSmartLockId" placeholder="lock-101" required />
+            </label>
+            <label>
+              <span>Guest phone number</span>
+              <input id="grantGuestPhone" placeholder="+1 555 0100" required />
+            </label>
+            <div class="form__row">
+              <label>
+                <span>Valid from (UTC)</span>
+                <input id="grantValidFrom" type="datetime-local" required />
+              </label>
+              <label>
+                <span>Valid to (UTC)</span>
+                <input id="grantValidTo" type="datetime-local" required />
+              </label>
+              <div></div>
+            </div>
+            <div class="form__actions">
+              <button class="btn" type="submit">Grant</button>
+              <div class="muted" id="accessGrantStatus"></div>
+            </div>
+          </form>
+        </div>
+
+        <div class="card">
+          <h3>Grant actions</h3>
+          <form id="accessActionsForm" class="form">
+            <label>
+              <span>Grant id</span>
+              <input id="grantId" type="number" min="1" />
+            </label>
+            <div class="form__actions">
+              <button class="btn btn--secondary" id="accessGet" type="button">Get</button>
+              <button class="btn btn--secondary" id="accessRevoke" type="button">Revoke</button>
+            </div>
+            <div class="muted" id="accessActionsStatus"></div>
+          </form>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top: 14px">
+        <h3>Access result</h3>
+        <pre id="accessResult" class="muted" style="white-space: pre-wrap; margin: 0;"></pre>
+      </div>
+
+      <div class="section__header" style="margin-top: 28px">
+        <h2>SMS (notification service)</h2>
+        <p class="muted">Send a message or view the SMS audit log.</p>
+      </div>
+
+      <div class="grid grid--2">
+        <div class="card">
+          <h3>Send SMS</h3>
+          <form id="smsSendForm" class="form">
+            <label>
+              <span>To</span>
+              <input id="smsTo" placeholder="+1 555 0100" required />
+            </label>
+            <label>
+              <span>Message</span>
+              <input id="smsMessage" placeholder="Your access code is 1234" required />
+            </label>
+            <div class="form__actions">
+              <button class="btn" type="submit">Send</button>
+              <div class="muted" id="smsSendStatus"></div>
+            </div>
+          </form>
+        </div>
+
+        <div class="card">
+          <h3>SMS log</h3>
+          <div class="form__actions" style="margin-bottom: 10px">
+            <button class="btn btn--secondary" id="smsRefresh" type="button">Refresh</button>
+            <div class="muted" id="smsListStatus"></div>
+          </div>
+          <div id="smsList" class="list"></div>
+          <div class="muted" id="smsEmpty" hidden>No SMS sent yet.</div>
+        </div>
+      </div>
     </div>
   </main>
 

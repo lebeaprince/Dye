@@ -119,6 +119,34 @@
         </div>
       </div>
     </section>
+
+    <section id="manage" class="section">
+      <div class="container">
+        <div class="section__header">
+          <h2>Manage your booking</h2>
+          <p class="muted">Look up your booking by reference and optionally cancel it.</p>
+        </div>
+
+        <div class="card">
+          <form id="manageBookingForm" class="form">
+            <div class="form__row">
+              <label>
+                <span>Booking reference</span>
+                <input id="manageBookingId" type="number" min="1" placeholder="e.g. 123" required />
+              </label>
+              <div style="display:flex; gap: 10px; align-items:flex-end; flex-wrap: wrap;">
+                <button class="btn btn--secondary" id="manageBookingCheck" type="button">Check status</button>
+                <button class="btn btn--secondary" id="manageBookingCancel" type="button">Cancel booking</button>
+              </div>
+            </div>
+
+            <div class="form__actions">
+              <div class="muted" id="manageBookingStatus"></div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
   </main>
 
   <footer class="footer">
