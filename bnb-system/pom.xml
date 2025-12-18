@@ -21,6 +21,7 @@
     <java.version>17</java.version>
     <spring-boot.version>3.4.1</spring-boot.version>
     <spring-cloud.version>2024.0.1</spring-cloud.version>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.release>${java.version}</maven.compiler.release>
   </properties>
 
@@ -49,10 +50,12 @@
         <plugin>
           <groupId>org.springframework.boot</groupId>
           <artifactId>spring-boot-maven-plugin</artifactId>
+          <version>${spring-boot.version}</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-compiler-plugin</artifactId>
+          <version>3.13.0</version>
           <configuration>
             <release>${java.version}</release>
           </configuration>

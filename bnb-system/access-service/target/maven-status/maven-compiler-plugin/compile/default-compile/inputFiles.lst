@@ -1,0 +1,9 @@
+/workspace/bnb-system/access-service/src/main/java/com/example/bnb/access/AccessServiceApplication.java
+/workspace/bnb-system/access-service/src/main/java/com/example/bnb/access/api/AccessController.java
+/workspace/bnb-system/access-service/src/main/java/com/example/bnb/access/api/ApiExceptionHandler.java
+/workspace/bnb-system/access-service/src/main/java/com/example/bnb/access/domain/AccessGrant.java
+/workspace/bnb-system/access-service/src/main/java/com/example/bnb/access/domain/AccessGrantStatus.java
+/workspace/bnb-system/access-service/src/main/java/com/example/bnb/access/service/AccessStore.java
+/workspace/bnb-system/access-service/src/main/java/com/example/bnb/access/service/NotificationClient.java
+/workspace/bnb-system/access-service/src/main/java/com/example/bnb/access/smartlock/SmartLockClient.java
+/workspace/bnb-system/access-service/src/main/java/com/example/bnb/access/smartlock/StubSmartLockClient.java
