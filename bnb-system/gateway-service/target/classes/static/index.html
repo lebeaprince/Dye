@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>BNB — Book your stay</title>
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+  <header class="header">
+    <div class="container header__inner">
+      <div class="brand">
+        <div class="brand__mark">BNB</div>
+        <div class="brand__text">
+          <div class="brand__name" id="bnbName">Your BnB</div>
+          <div class="brand__tag">Comfortable rooms. Easy booking.</div>
+        </div>
+      </div>
+      <nav class="nav">
+        <a href="#rooms">Rooms</a>
+        <a href="#book">Book</a>
+        <a class="nav__admin" href="/admin.html">Admin login</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="container hero__inner">
+        <h1>Stay somewhere you’ll remember.</h1>
+        <p class="muted">Book direct for the best rates and flexible check-in.</p>
+        <div class="hero__cta">
+          <a class="btn" href="#book">Book now</a>
+          <a class="btn btn--secondary" href="#rooms">View rooms</a>
+        </div>
+      </div>
+    </section>
+
+    <section id="rooms" class="section">
+      <div class="container">
+        <div class="section__header">
+          <h2>Rooms</h2>
+          <p class="muted">Availability and pricing are confirmed at checkout.</p>
+        </div>
+        <div id="roomsList" class="grid"></div>
+        <div id="roomsEmpty" class="card card--empty" hidden>
+          <h3>No rooms yet</h3>
+          <p class="muted">An admin needs to add rooms first.</p>
+          <a class="btn btn--secondary" href="/admin.html">Go to admin</a>
+        </div>
+      </div>
+    </section>
+
+    <section id="book" class="section section--alt">
+      <div class="container">
+        <div class="section__header">
+          <h2>Book your stay</h2>
+          <p class="muted">Fill in your details to request a booking.</p>
+        </div>
+
+        <div class="card">
+          <form id="bookingForm" class="form">
+            <div class="form__row">
+              <label>
+                <span>Full name</span>
+                <input id="fullName" required placeholder="Jane Doe" />
+              </label>
+              <label>
+                <span>Phone number</span>
+                <input id="phone" required placeholder="+1 555 0100" />
+              </label>
+            </div>
+
+            <div class="form__row">
+              <label>
+                <span>Room</span>
+                <select id="roomId" required></select>
+              </label>
+              <label>
+                <span>Start date/time (UTC)</span>
+                <input id="startAt" type="datetime-local" required />
+              </label>
+            </div>
+
+            <div class="form__row">
+              <label>
+                <span>Stay duration</span>
+                <select id="stayDuration">
+                  <option value="NIGHTLY">Nightly</option>
+                  <option value="HOURLY">Hourly</option>
+                  <option value="WEEKLY">Weekly</option>
+                  <option value="MONTHLY">Monthly</option>
+                </select>
+              </label>
+              <label>
+                <span>Duration units</span>
+                <input id="durationUnits" type="number" min="1" value="1" required />
+              </label>
+              <label>
+                <span>Package</span>
+                <select id="servicePackage">
+                  <option value="ROOM_ONLY">Room only</option>
+                  <option value="ROOM_AND_BREAKFAST">Room + breakfast</option>
+                  <option value="ALL_INCLUSIVE">All inclusive</option>
+                </select>
+              </label>
+            </div>
+
+            <label class="checkbox">
+              <input id="smsOptIn" type="checkbox" checked />
+              <span>Send me SMS updates</span>
+            </label>
+
+            <div class="form__actions">
+              <button class="btn" type="submit">Request booking</button>
+              <div class="muted" id="bookingStatus"></div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer__inner">
+      <div class="muted">© <span id="year"></span> Your BnB</div>
+      <div class="muted">Powered by BNB SaaS</div>
+    </div>
+  </footer>
+
+  <script src="/app.js"></script>
+</body>
+</html>

@@ -2,6 +2,7 @@ package com.example.bnb.booking.api;
 
 import java.util.Map;
 import java.util.NoSuchElementException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -25,5 +26,11 @@ public class ApiExceptionHandler {
   @ResponseStatus(HttpStatus.CONFLICT)
   public Map<String, Object> conflict(IllegalStateException e) {
     return Map.of("error", "CONFLICT", "message", e.getMessage());
+  }
+
+  @ExceptionHandler(DataIntegrityViolationException.class)
+  @ResponseStatus(HttpStatus.CONFLICT)
+  public Map<String, Object> dataConflict(DataIntegrityViolationException e) {
+    return Map.of("error", "CONFLICT", "message", "Request violates a uniqueness or integrity constraint");
   }
 }

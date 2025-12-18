@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -27,17 +28,23 @@ public class RoomsController {
   ) {}
 
   @PostMapping
-  public Room create(@Valid @RequestBody CreateRoomRequest req) {
-    return store.createRoom(req.roomNumber(), req.smartLockId());
+  public Room create(
+      @RequestHeader(value = "X-Bnb-Slug", required = false) String bnbSlug,
+      @Valid @RequestBody CreateRoomRequest req
+  ) {
+    return store.createRoom(BookingStore.normalizeBnbSlug(bnbSlug), req.roomNumber(), req.smartLockId());
   }
 
   @GetMapping
-  public List<Room> list() {
-    return store.listRooms();
+  public List<Room> list(@RequestHeader(value = "X-Bnb-Slug", required = false) String bnbSlug) {
+    return store.listRooms(BookingStore.normalizeBnbSlug(bnbSlug));
   }
 
   @GetMapping("/{roomId}")
-  public Room get(@PathVariable long roomId) {
-    return store.getRoom(roomId);
+  public Room get(
+      @RequestHeader(value = "X-Bnb-Slug", required = false) String bnbSlug,
+      @PathVariable long roomId
+  ) {
+    return store.getRoom(BookingStore.normalizeBnbSlug(bnbSlug), roomId);
   }
 }

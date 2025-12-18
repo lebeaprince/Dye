@@ -10,6 +10,24 @@ services:
     environment:
       SPRING_PROFILES_ACTIVE: native
 
+  gateway-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        SERVICE: gateway-service
+    ports:
+      - "8080:8080"
+    depends_on:
+      - config-server
+      - booking-service
+      - payment-service
+      - access-service
+      - notification-service
+    environment:
+      SPRING_CONFIG_IMPORT: optional:configserver:http://config-server:8888
+      SPRING_CLOUD_CONFIG_PROFILE: docker
+
   notification-service:
     build:
       context: .
@@ -34,10 +52,16 @@ services:
       - "8083:8083"
     depends_on:
       - config-server
+      - access-db
       - notification-service
     environment:
       SPRING_CONFIG_IMPORT: optional:configserver:http://config-server:8888
       SPRING_CLOUD_CONFIG_PROFILE: docker
+      ACCESS_DB_HOST: access-db
+      ACCESS_DB_PORT: 5432
+      ACCESS_DB_NAME: access
+      ACCESS_DB_USER: access
+      ACCESS_DB_PASSWORD: access
 
   booking-service:
     build:
@@ -49,9 +73,15 @@ services:
       - "8081:8081"
     depends_on:
       - config-server
+      - booking-db
     environment:
       SPRING_CONFIG_IMPORT: optional:configserver:http://config-server:8888
       SPRING_CLOUD_CONFIG_PROFILE: docker
+      BOOKING_DB_HOST: booking-db
+      BOOKING_DB_PORT: 5432
+      BOOKING_DB_NAME: booking
+      BOOKING_DB_USER: booking
+      BOOKING_DB_PASSWORD: booking
 
   payment-service:
     build:
@@ -63,8 +93,52 @@ services:
       - "8082:8082"
     depends_on:
       - config-server
+      - payment-db
       - booking-service
       - access-service
     environment:
       SPRING_CONFIG_IMPORT: optional:configserver:http://config-server:8888
       SPRING_CLOUD_CONFIG_PROFILE: docker
+      PAYMENT_DB_HOST: payment-db
+      PAYMENT_DB_PORT: 5432
+      PAYMENT_DB_NAME: payment
+      PAYMENT_DB_USER: payment
+      PAYMENT_DB_PASSWORD: payment
+
+  booking-db:
+    image: postgres:17
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_DB: booking
+      POSTGRES_USER: booking
+      POSTGRES_PASSWORD: booking
+    volumes:
+      - booking_db_data:/var/lib/postgresql/data
+
+  payment-db:
+    image: postgres:17
+    ports:
+      - "5434:5432"
+    environment:
+      POSTGRES_DB: payment
+      POSTGRES_USER: payment
+      POSTGRES_PASSWORD: payment
+    volumes:
+      - payment_db_data:/var/lib/postgresql/data
+
+  access-db:
+    image: postgres:17
+    ports:
+      - "5435:5432"
+    environment:
+      POSTGRES_DB: access
+      POSTGRES_USER: access
+      POSTGRES_PASSWORD: access
+    volumes:
+      - access_db_data:/var/lib/postgresql/data
+
+volumes:
+  booking_db_data:
+  payment_db_data:
+  access_db_data:

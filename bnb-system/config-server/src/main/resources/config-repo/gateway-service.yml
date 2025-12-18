@@ -1,0 +1,39 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: gateway-service
+  cloud:
+    gateway:
+      routes:
+        - id: booking-service
+          uri: ${bnb.services.booking.base-url}
+          predicates:
+            - Path=/api/booking/**
+          filters:
+            - StripPrefix=2
+        - id: payment-service
+          uri: ${bnb.services.payment.base-url}
+          predicates:
+            - Path=/api/payment/**
+          filters:
+            - StripPrefix=2
+        - id: access-service
+          uri: ${bnb.services.access.base-url}
+          predicates:
+            - Path=/api/access/**
+          filters:
+            - StripPrefix=2
+        - id: notification-service
+          uri: ${bnb.services.notification.base-url}
+          predicates:
+            - Path=/api/notification/**
+          filters:
+            - StripPrefix=2
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
