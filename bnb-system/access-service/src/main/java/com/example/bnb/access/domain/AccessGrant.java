@@ -6,6 +6,7 @@ public record AccessGrant(
     long id,
     long bookingId,
     String smartLockId,
+    String externalGrantId,
     String guestPhoneNumber,
     OffsetDateTime validFrom,
     OffsetDateTime validTo,
