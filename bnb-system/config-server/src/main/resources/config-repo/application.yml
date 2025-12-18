@@ -1,0 +1,10 @@
+bnb:
+  services:
+    booking:
+      base-url: http://localhost:8081
+    payment:
+      base-url: http://localhost:8082
+    access:
+      base-url: http://localhost:8083
+    notification:
+      base-url: http://localhost:8084

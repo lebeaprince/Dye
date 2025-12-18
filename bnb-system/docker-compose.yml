@@ -1,0 +1,70 @@
+services:
+  config-server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        SERVICE: config-server
+    ports:
+      - "8888:8888"
+    environment:
+      SPRING_PROFILES_ACTIVE: native
+
+  notification-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        SERVICE: notification-service
+    ports:
+      - "8084:8084"
+    depends_on:
+      - config-server
+    environment:
+      SPRING_CONFIG_IMPORT: optional:configserver:http://config-server:8888
+      SPRING_CLOUD_CONFIG_PROFILE: docker
+
+  access-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        SERVICE: access-service
+    ports:
+      - "8083:8083"
+    depends_on:
+      - config-server
+      - notification-service
+    environment:
+      SPRING_CONFIG_IMPORT: optional:configserver:http://config-server:8888
+      SPRING_CLOUD_CONFIG_PROFILE: docker
+
+  booking-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        SERVICE: booking-service
+    ports:
+      - "8081:8081"
+    depends_on:
+      - config-server
+    environment:
+      SPRING_CONFIG_IMPORT: optional:configserver:http://config-server:8888
+      SPRING_CLOUD_CONFIG_PROFILE: docker
+
+  payment-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        SERVICE: payment-service
+    ports:
+      - "8082:8082"
+    depends_on:
+      - config-server
+      - booking-service
+      - access-service
+    environment:
+      SPRING_CONFIG_IMPORT: optional:configserver:http://config-server:8888
+      SPRING_CLOUD_CONFIG_PROFILE: docker

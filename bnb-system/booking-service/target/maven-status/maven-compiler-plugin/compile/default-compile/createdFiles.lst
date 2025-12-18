@@ -1,0 +1,16 @@
+com/example/bnb/booking/api/GuestsController$CreateGuestRequest.class
+com/example/bnb/booking/domain/Room.class
+com/example/bnb/booking/api/RoomsController$CreateRoomRequest.class
+com/example/bnb/booking/api/GuestsController.class
+com/example/bnb/booking/api/BookingsController.class
+com/example/bnb/booking/domain/ServicePackage.class
+com/example/bnb/booking/api/RoomsController.class
+com/example/bnb/booking/api/ApiExceptionHandler.class
+com/example/bnb/booking/api/BookingsController$CreateBookingRequest.class
+com/example/bnb/booking/BookingServiceApplication.class
+com/example/bnb/booking/service/BookingStore$1.class
+com/example/bnb/booking/domain/BookingStatus.class
+com/example/bnb/booking/domain/StayDurationOption.class
+com/example/bnb/booking/domain/Booking.class
+com/example/bnb/booking/service/BookingStore.class
+com/example/bnb/booking/domain/Guest.class

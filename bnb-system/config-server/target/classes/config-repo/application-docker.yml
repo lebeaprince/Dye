@@ -1,0 +1,10 @@
+bnb:
+  services:
+    booking:
+      base-url: http://booking-service:8081
+    payment:
+      base-url: http://payment-service:8082
+    access:
+      base-url: http://access-service:8083
+    notification:
+      base-url: http://notification-service:8084

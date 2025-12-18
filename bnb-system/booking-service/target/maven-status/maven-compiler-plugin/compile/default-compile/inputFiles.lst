@@ -1,0 +1,12 @@
+/workspace/bnb-system/booking-service/src/main/java/com/example/bnb/booking/BookingServiceApplication.java
+/workspace/bnb-system/booking-service/src/main/java/com/example/bnb/booking/api/ApiExceptionHandler.java
+/workspace/bnb-system/booking-service/src/main/java/com/example/bnb/booking/api/BookingsController.java
+/workspace/bnb-system/booking-service/src/main/java/com/example/bnb/booking/api/GuestsController.java
+/workspace/bnb-system/booking-service/src/main/java/com/example/bnb/booking/api/RoomsController.java
+/workspace/bnb-system/booking-service/src/main/java/com/example/bnb/booking/domain/Booking.java
+/workspace/bnb-system/booking-service/src/main/java/com/example/bnb/booking/domain/BookingStatus.java
+/workspace/bnb-system/booking-service/src/main/java/com/example/bnb/booking/domain/Guest.java
+/workspace/bnb-system/booking-service/src/main/java/com/example/bnb/booking/domain/Room.java
+/workspace/bnb-system/booking-service/src/main/java/com/example/bnb/booking/domain/ServicePackage.java
+/workspace/bnb-system/booking-service/src/main/java/com/example/bnb/booking/domain/StayDurationOption.java
+/workspace/bnb-system/booking-service/src/main/java/com/example/bnb/booking/service/BookingStore.java
