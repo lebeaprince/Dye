@@ -11,6 +11,8 @@
 
   <modules>
     <module>config-server</module>
+    <module>discovery-service</module>
+    <module>gateway-service</module>
     <module>booking-service</module>
     <module>payment-service</module>
     <module>access-service</module>
