@@ -8,6 +8,7 @@ spring:
     url: jdbc:postgresql://${BOOKING_DB_HOST:localhost}:${BOOKING_DB_PORT:5433}/${BOOKING_DB_NAME:booking}
     username: ${BOOKING_DB_USER:booking}
     password: ${BOOKING_DB_PASSWORD:booking}
+    driver-class-name: org.postgresql.Driver
     hikari:
       maximum-pool-size: ${BOOKING_DB_POOL_SIZE:10}
       minimum-idle: ${BOOKING_DB_MIN_IDLE:2}
