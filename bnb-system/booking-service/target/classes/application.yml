@@ -6,7 +6,23 @@ spring:
   cloud:
     config:
       profile: dev
-
+  datasource:
+    url: jdbc:postgresql://localhost:5432/bnbsecure
+    username: postgres
+    password: mynewpassword
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+    defer-datasource-initialization: true
+  sql:
+    init:
+      mode: always
+      data-locations: classpath:db/migration/V1__init.sql
+      
 management:
   endpoints:
     web:
