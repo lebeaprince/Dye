@@ -7,9 +7,9 @@ spring:
     config:
       profile: dev
   datasource:
-    url: jdbc:postgresql://${BOOKING_DB_HOST:localhost}:${BOOKING_DB_PORT:5433}/${BOOKING_DB_NAME:booking}
-    username: ${BOOKING_DB_USER:booking}
-    password: ${BOOKING_DB_PASSWORD:booking}
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: root
+    password: mynewpassword
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:

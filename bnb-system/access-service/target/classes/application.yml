@@ -7,9 +7,9 @@ spring:
     config:
       profile: dev
   datasource:
-    url: jdbc:postgresql://${ACCESS_DB_HOST:localhost}:${ACCESS_DB_PORT:5435}/${ACCESS_DB_NAME:access}
-    username: ${ACCESS_DB_USER:access}
-    password: ${ACCESS_DB_PASSWORD:access}
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: root
+    password: mynewpassword
     driver-class-name: org.postgresql.Driver
 
 management:
