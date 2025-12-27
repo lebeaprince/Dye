@@ -12,6 +12,8 @@ This repo contains a Spring Cloud microservice suite under `bnb-system/`:
 
 ## Local dev (no Docker)
 
+Java prerequisite: **JDK 17+** (Spring Boot 3.x baseline). If you see `release version 17 not supported`, you're running Maven with an older JDK.
+
 Start services in this order (separate terminals). Anything that imports config from `http://localhost:8888` must come **after** the Config Server.
 
 Database prerequisite: `booking-service`, `payment-service`, and `access-service` expect Postgres instances (defaults: `localhost:5433`, `localhost:5434`, `localhost:5435`). Easiest option is to run only the DB containers:

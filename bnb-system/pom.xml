@@ -67,7 +67,40 @@
           <artifactId>maven-surefire-plugin</artifactId>
           <version>3.5.2</version>
         </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-enforcer-plugin</artifactId>
+          <version>3.5.0</version>
+        </plugin>
       </plugins>
     </pluginManagement>
+
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>enforce-java</id>
+            <phase>validate</phase>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <configuration>
+              <fail>true</fail>
+              <rules>
+                <requireJavaVersion>
+                  <version>[17,)</version>
+                  <message>
+                    This project targets Java ${java.version} (Spring Boot ${spring-boot.version} requires Java 17+).
+                    Your current Java version is too old. Use JDK 17+ or build via Docker Compose (which uses Temurin 17).
+                  </message>
+                </requireJavaVersion>
+              </rules>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
   </build>
 </project>
